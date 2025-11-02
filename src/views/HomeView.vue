@@ -130,7 +130,10 @@ const handleGenreClick = (genreId: string) => {
     </div>
   </div>
   <div v-if="episodesStore.state.status === 'loading'">Loading...</div>
-  <div class="flex flex-wrap gap-6 justify-center" v-if="episodesStore.state.status === 'success'">
+  <div
+    class="flex flex-wrap px-4 gap-6 justify-center"
+    v-if="episodesStore.state.status === 'success'"
+  >
     <div class="" v-for="episode in episodesStore.state.episodes" :key="episode.title">
       <EpisodeCard :episode="episode" />
     </div>

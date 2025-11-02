@@ -2,6 +2,7 @@ export interface Episode {
   title: string
   editorialDate: Date
   image: string
+  duration: number
   url: string
 }
 
