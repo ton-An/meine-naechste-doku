@@ -104,7 +104,7 @@ const genres = [
   },
 ]
 
-const selectedGenre = ref<string | null>(null)
+const selectedGenre = ref<string>('all')
 
 const handleGenreClick = (genreId: string) => {
   selectedGenre.value = genreId
