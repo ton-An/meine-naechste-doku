@@ -122,7 +122,7 @@ const handleGenreClick = (genreId: string) => {
       :class="
         selectedGenre === genre.id ? 'bg-orange-400 text-white' : 'text-gray-800 hover:bg-gray-100'
       "
-      class="px-3 py-1.5 rounded-lg transition-all duration-200 ease-out"
+      class="px-3 py-1.5 rounded-lg transition-all duration-200 ease-out cursor-pointer"
       v-for="genre in genres"
       :key="genre.id"
     >
