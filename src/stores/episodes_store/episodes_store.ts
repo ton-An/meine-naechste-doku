@@ -12,7 +12,7 @@ export const useEpisodesStore = defineStore('episodes', {
     state: initialState as EpisodesState,
   }),
   actions: {
-    async getNewEpisodes() {
+    async getNewEpisodes(genre: string = 'all') {
       this.state = { status: 'loading' as const }
 
       const headers = {
@@ -209,7 +209,7 @@ export const useEpisodesStore = defineStore('episodes', {
                 abGroup: 'gruppe-b',
                 userSegment: 'segment_0',
               },
-              tabId: null,
+              tabId: genre === 'all' ? null : genre,
             },
           },
         }),
@@ -224,6 +224,7 @@ export const useEpisodesStore = defineStore('episodes', {
       for (const smartCollection of smartCollections) {
         if (!('seasons' in smartCollection)) continue
         const seasons = smartCollection['seasons']['nodes']
+        if (seasons.length === 0) continue
         const episodesOfSeason = seasons[0]['episodes']['nodes']
 
         for (const episode of episodesOfSeason) {
