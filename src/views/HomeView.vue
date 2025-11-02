@@ -12,7 +12,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <h1 class="py-12 px-8 text-2xl font-bold">Neuste Episoden</h1>
+  <h1 class="py-18 px-8 text-6xl font-bold">
+    Die neusten <span class="text-orange-500">ZDF Dokus</span>!
+  </h1>
   <div v-if="episodesStore.state.status === 'loading'">Loading...</div>
   <div class="flex flex-wrap gap-6 justify-center" v-if="episodesStore.state.status === 'success'">
     <div class="" v-for="episode in episodesStore.state.episodes" :key="episode.title">
