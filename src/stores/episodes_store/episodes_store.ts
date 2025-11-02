@@ -30,7 +30,7 @@ export const useEpisodesStore = defineStore('episodes', {
           query: `
       query getMetaCollectionContent(
         $collectionId: String!
-        $episodesPageSize: Int = 24
+        $episodesPageSize: Int = 96
         $episodesAfter: Cursor
         $filterBy: SeasonsConnectionFilterByInput
         $sortBy: [VideosConnectionSortByInput!]
@@ -198,12 +198,12 @@ export const useEpisodesStore = defineStore('episodes', {
           variables: {
             collectionId: 'pub-form-10003',
             seasonIndex: 0,
-            episodesPageSize: 24,
+            episodesPageSize: 96,
             input: {
               appId: 'zdf-web-99976d81',
               filters: {},
               pagination: {
-                first: 24,
+                first: 96,
               },
               user: {
                 abGroup: 'gruppe-b',
