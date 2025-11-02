@@ -1,3 +1,10 @@
+export interface Episode {
+  title: string
+  editorialDate: Date
+  image: string
+  url: string
+}
+
 export interface EpisodesInitial {
   status: 'initial'
 }
@@ -8,6 +15,7 @@ export interface EpisodesLoading {
 
 export interface EpisodesSuccess {
   status: 'success'
+  episodes: Episode[]
 }
 
 export interface EpisodesFailure {
