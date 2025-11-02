@@ -22,12 +22,11 @@ const formatDuration = (duration: number) => {
 <template>
   <a :href="episode.url" target="_blank">
     <div class="flex flex-col gap-3 w-72">
-      <div class="flex justify-between gap-2 relative">
-        <img
-          v-lazy="{ src: episode.image }"
-          alt="Episode Image"
-          class="h-48 object-cover rounded-2xl shadow-lg"
-        />
+      <div class="flex justify-between gap-2 relative rounded-2xl shadow-lg overflow-hidden">
+        <div
+          class="absolute inset-0 bg-black/50 opacity-0 hover:opacity-60 transition-all duration-240 ease"
+        ></div>
+        <img v-lazy="{ src: episode.image }" alt="Episode Image" class="h-48 object-cover" />
         <p
           class="text-white bg-black/50 m-2 px-2 py-1 rounded-lg text-sm whitespace-nowrap absolute bottom-0 right-0"
         >
