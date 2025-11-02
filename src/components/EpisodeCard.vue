@@ -16,7 +16,7 @@ const formattedDate = props.episode.editorialDate.toLocaleDateString('de-DE', {
   <a :href="episode.url" target="_blank">
     <div class="flex flex-col gap-3 w-72">
       <img
-        :src="episode.image"
+        v-lazy="{ src: episode.image }"
         alt="Episode Image"
         class="h-48 object-cover rounded-2xl shadow-lg"
       />
