@@ -33,13 +33,9 @@ export const useEpisodesStore = defineStore('episodes', {
           ...documentaryResponse['data']['metaCollectionContent']['smartCollections'],
           ...reportsResponse['data']['metaCollectionContent']['smartCollections'],
         ]
-      }
-
-      if (documentaryResponse) {
+      } else if (documentaryResponse) {
         smartCollections = documentaryResponse['data']['metaCollectionContent']['smartCollections']
-      }
-
-      if (reportsResponse) {
+      } else if (reportsResponse) {
         smartCollections = reportsResponse['data']['metaCollectionContent']['smartCollections']
       }
 
