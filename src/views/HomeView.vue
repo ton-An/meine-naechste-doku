@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 
+import CategorySelector from '@/components/CategorySelector.vue'
+import CategoryTabs from '@/components/CategoryTabs.vue'
 import EpisodeCard from '@/components/EpisodeCard.vue'
 import { useEpisodesStore } from '@/stores/episodes_store/episodes_store'
 
 const episodesStore = useEpisodesStore()
-
-const { t } = useI18n()
 
 onMounted(() => {
   episodesStore.getNewEpisodes()
@@ -107,6 +106,7 @@ const genres = [
 const selectedGenre = ref<string>('all')
 
 const handleGenreClick = (genreId: string) => {
+  console.log(genreId)
   selectedGenre.value = genreId
   episodesStore.getNewEpisodes(genreId)
 }
@@ -114,27 +114,31 @@ const handleGenreClick = (genreId: string) => {
 
 <template>
   <h1 class="py-18 px-8 text-6xl font-bold">
-    Die neusten <span class="text-orange-500">ZDF Dokus</span>!
+    Die neusten <span class="text-primary">ZDF Dokus</span>!
   </h1>
-  <div class="flex flex-wrap gap-1 pb-6 px-4">
-    <div
-      @click="handleGenreClick(genre.id)"
-      :class="
-        selectedGenre === genre.id ? 'bg-orange-400 text-white' : 'text-gray-800 hover:bg-gray-100'
-      "
-      class="px-3 py-1.5 rounded-lg transition-all duration-200 ease-out cursor-pointer"
-      v-for="genre in genres"
-      :key="genre.id"
-    >
-      <span>{{ t(`genres.${genre.key}`) }}</span>
-    </div>
-  </div>
+
+  <CategorySelector
+    :genres="genres"
+    :selectedGenre="selectedGenre"
+    :handleGenreClick="handleGenreClick"
+    class="block md:hidden mb-6"
+  />
+  <CategoryTabs
+    :genres="genres"
+    :selectedGenre="selectedGenre"
+    :handleGenreClick="handleGenreClick"
+    class="hidden md:block"
+  />
   <div v-if="episodesStore.state.status === 'loading'">Loading...</div>
   <div
-    class="flex flex-wrap px-4 gap-6 justify-center"
+    class="flex flex-wrap px-4 gap-6 justify-center w-full"
     v-if="episodesStore.state.status === 'success'"
   >
-    <div class="" v-for="episode in episodesStore.state.episodes" :key="episode.title">
+    <div
+      class="w-full sm:w-72"
+      v-for="episode in episodesStore.state.episodes"
+      :key="episode.title"
+    >
       <EpisodeCard :episode="episode" />
     </div>
   </div>
