@@ -24,6 +24,12 @@ const de: MessageSchema = {
     mystery: 'Mystery',
     drama: 'Drama',
     entertainment: 'Unterhaltung',
+    sex: 'Sex',
+    cooking: 'Kochen',
+    advice: 'Ratgeber',
+    adventure: 'Abenteuer',
+    comingOfAge: 'Coming-Of-Age',
+    satire: 'Satire',
   },
 }
 

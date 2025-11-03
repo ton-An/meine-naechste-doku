@@ -22,6 +22,12 @@ type MessageSchema = {
     mystery: string
     drama: string
     entertainment: string
+    sex: string
+    cooking: string
+    advice: string
+    adventure: string
+    comingOfAge: string
+    satire: string
   }
 }
 

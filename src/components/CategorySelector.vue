@@ -16,9 +16,9 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
 defineProps<{
-  genres: { id: string; key: string }[]
+  genres: { documentaryId: string | undefined; reportsId: string | undefined; key: string }[]
   selectedGenre: string
-  handleGenreClick: (genreId: string) => void
+  handleGenreClick: (key: string) => void
 }>()
 </script>
 
@@ -40,11 +40,11 @@ defineProps<{
                 :key="index"
                 class="text-base px-2 py-1.5 rounded-lg"
                 :class="
-                  selectedGenre === option.id
+                  selectedGenre === option.key
                     ? 'bg-primary text-white'
                     : 'text-gray-800 hover:bg-gray-100'
                 "
-                :value="option.id"
+                :value="option.key"
               >
                 <SelectItemText>
                   {{ t(`genres.${option.key}`) }}
