@@ -1,11 +1,6 @@
 <script setup lang="ts">
-import ShowTypeSelector from './ShowTypeSelector.vue'
-
-defineProps<{
-  genres: { documentaryId: string | undefined; reportsId: string | undefined; key: string }[]
-  selectedGenre: string
-  handleGenreClick: (key: string) => void
-}>()
+import CategorySelector from './CategorySelector.vue'
+import GenreSelector from './GenreSelector.vue'
 </script>
 
 <template>
@@ -13,8 +8,12 @@ defineProps<{
     <div
       class="bg-gray-400/30 mx-20 rounded-xl backdrop-blur-lg flex flex-row justify-center gap-4 p-4"
     >
-      <ShowTypeSelector />
-      <ShowTypeSelector />
+      <div class="w-1/2 flex justify-end">
+        <CategorySelector />
+      </div>
+      <div class="w-1/2">
+        <GenreSelector />
+      </div>
     </div>
   </div>
 </template>

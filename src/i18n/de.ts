@@ -1,6 +1,10 @@
 import type { MessageSchema } from './schema'
 
 const de: MessageSchema = {
+  common: {
+    selectCategories: 'Kategorien auswählen',
+    selectGenres: 'Genres auswählen',
+  },
   genres: {
     all: 'Alle',
     knowledge: 'Wissen',
@@ -30,6 +34,10 @@ const de: MessageSchema = {
     adventure: 'Abenteuer',
     comingOfAge: 'Coming-Of-Age',
     satire: 'Satire',
+  },
+  category: {
+    documentary: 'Dokumentation',
+    report: 'Reportage',
   },
 }
 

@@ -1,4 +1,8 @@
 type MessageSchema = {
+  common: {
+    selectCategories: string
+    selectGenres: string
+  }
   genres: {
     all: string
     knowledge: string
@@ -28,6 +32,10 @@ type MessageSchema = {
     adventure: string
     comingOfAge: string
     satire: string
+  }
+  category: {
+    documentary: string
+    report: string
   }
 }
 
