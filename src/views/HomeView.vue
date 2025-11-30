@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
-import CategorySelector from '@/components/CategorySelector.vue'
-import CategoryTabs from '@/components/CategoryTabs.vue'
 import EpisodeCard from '@/components/EpisodeCard.vue'
+import FilterHeader from '@/components/FilterHeader.vue'
+import GradientBlob from '@/components/GradientBlob.vue'
+import ZdfLogo from '@/components/ZdfLogo.vue'
 import { useEpisodesStore } from '@/stores/episodes_store/episodes_store'
 
 const episodesStore = useEpisodesStore()
@@ -168,33 +169,35 @@ const handleGenreClick = (key: string) => {
 </script>
 
 <template>
-  <h1 class="py-18 px-8 text-6xl font-bold">
-    Die neusten <span class="text-primary">ZDF Dokus</span>!
-  </h1>
+  <div class="fixed top-25 left-[50%] translate-x-[-50%] -z-10">
+    <GradientBlob
+      class="absolute top-[50%] left-[50%] size-140 translate-x-[-50%] translate-y-[-50%]"
+    />
 
-  <CategorySelector
-    :genres="genres"
-    :selectedGenre="selectedGenre"
-    :handleGenreClick="handleGenreClick"
-    class="block md:hidden mb-6"
-  />
-  <CategoryTabs
-    :genres="genres"
-    :selectedGenre="selectedGenre"
-    :handleGenreClick="handleGenreClick"
-    class="hidden md:block"
-  />
+    <div class="flex flex-col items-center justify-center">
+      <ZdfLogo class="w-40 h-40 relative" />
+      <h1 class="text-[2.2em] font-bold">Deine nächste Folge</h1>
+    </div>
+  </div>
+
   <div v-if="episodesStore.state.status === 'loading'">Loading...</div>
-  <div
-    class="flex flex-wrap px-4 gap-6 justify-center w-full"
-    v-if="episodesStore.state.status === 'success'"
-  >
-    <div
-      class="w-full sm:w-72"
-      v-for="episode in episodesStore.state.episodes"
-      :key="episode.title"
-    >
-      <EpisodeCard :episode="episode" />
+  <div class="px-4 w-full z-5 mt-100 relative" v-if="episodesStore.state.status === 'success'">
+    <FilterHeader
+      :genres="genres"
+      :selectedGenre="selectedGenre"
+      :handleGenreClick="handleGenreClick"
+      class="hidden md:block sticky top-4 left-0 z-20"
+    />
+    <div class="relative z-10 backdrop-blur-lg pt-10">
+      <div class="flex flex-wrap gap-6 justify-center">
+        <div
+          class="w-full sm:w-72"
+          v-for="episode in episodesStore.state.episodes"
+          :key="episode.title"
+        >
+          <EpisodeCard :episode="episode" />
+        </div>
+      </div>
     </div>
   </div>
   <div v-if="episodesStore.state.status === 'failure'">Failure</div>
