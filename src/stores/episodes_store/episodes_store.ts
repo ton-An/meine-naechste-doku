@@ -1,6 +1,7 @@
 // stores/dataStore.ts
 import { defineStore } from 'pinia'
 
+import type { SelectedGenre } from '../filterStore/filterStates'
 import type { Episode, EpisodesState } from './episodes_state'
 
 const initialState: EpisodesState = {
@@ -12,31 +13,23 @@ export const useEpisodesStore = defineStore('episodes', {
     state: initialState as EpisodesState,
   }),
   actions: {
-    async getNewEpisodes(
-      documentaryGenreId: string | undefined,
-      reportsGenreId: string | undefined,
-    ) {
+    async getNewEpisodes(selectedGenres: SelectedGenre[]) {
       this.state = { status: 'loading' as const }
-      let documentaryResponse = null
-      let reportsResponse = null
-      if (documentaryGenreId) {
-        documentaryResponse = await getEpisodes('pub-form-10003', documentaryGenreId)
-      }
-      if (reportsGenreId) {
-        reportsResponse = await getEpisodes('pub-form-10009', reportsGenreId)
+
+      const promises = []
+
+      for (const selectedGenre of selectedGenres) {
+        for (const id of selectedGenre.ids) {
+          promises.push(getEpisodes(id.category, id.id))
+        }
       }
 
-      let smartCollections = []
+      const responses = await Promise.all(promises)
 
-      if (documentaryResponse && reportsResponse) {
-        smartCollections = [
-          ...documentaryResponse['data']['metaCollectionContent']['smartCollections'],
-          ...reportsResponse['data']['metaCollectionContent']['smartCollections'],
-        ]
-      } else if (documentaryResponse) {
-        smartCollections = documentaryResponse['data']['metaCollectionContent']['smartCollections']
-      } else if (reportsResponse) {
-        smartCollections = reportsResponse['data']['metaCollectionContent']['smartCollections']
+      const smartCollections = []
+
+      for (const response of responses) {
+        smartCollections.push(...response['data']['metaCollectionContent']['smartCollections'])
       }
 
       const episodes: Episode[] = []

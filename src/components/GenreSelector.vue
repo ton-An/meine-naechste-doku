@@ -195,7 +195,6 @@ const onValuesUpdated = (values: CustomSelectorOption[]) => {
 </script>
 
 <template>
-  <div></div>
   <CustomSelector
     :options="availableGenres"
     :values="selectedGenres"

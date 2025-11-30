@@ -1,7 +1,7 @@
 // stores/dataStore.ts
 import { defineStore } from 'pinia'
 
-import { type FilterState } from './filterStates'
+import { type FilterState, type SelectedGenre } from './filterStates'
 
 export const useFilterStore = defineStore('filter', {
   state: () => ({
@@ -10,6 +10,7 @@ export const useFilterStore = defineStore('filter', {
       selectedGenres: [],
       availableCategories: categories,
       availableGenres: [],
+      isModified: false,
     } as FilterState,
   }),
   actions: {
@@ -26,9 +27,42 @@ export const useFilterStore = defineStore('filter', {
 
       this.state.availableGenres = Array.from(availableGenres)
       this.state.selectedCategories = selectedCategories
+      this.state.isModified = true
     },
     updateSelectedGenres(selectedGenres: string[]) {
       this.state.selectedGenres = selectedGenres
+      this.state.isModified = true
+    },
+    resetIsModified() {
+      this.state.isModified = false
+    },
+  },
+  getters: {
+    getSelectedGenres: (state): SelectedGenre[] => {
+      const computedSelectedGenres: Record<string, SelectedGenre> = {}
+
+      for (const selectedCategoryId of state.state.selectedCategories) {
+        const genresOfCategory = genresOfCategories[selectedCategoryId]!
+
+        for (const selectedGenreKey of state.state.selectedGenres) {
+          const genre = genresOfCategory.find((genre) => genre.key === selectedGenreKey)
+
+          if (genre) {
+            const genreId = genre.id
+            const id = { category: selectedCategoryId, id: genreId }
+            if (!computedSelectedGenres[genreId]) {
+              computedSelectedGenres[genreId] = {
+                ids: [id],
+                key: selectedGenreKey,
+              }
+            } else {
+              computedSelectedGenres[genreId].ids.push(id)
+            }
+          }
+        }
+      }
+
+      return Object.values(computedSelectedGenres)
     },
   },
 })

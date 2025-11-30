@@ -3,9 +3,10 @@ export interface FilterState {
   selectedGenres: string[]
   availableCategories: string[]
   availableGenres: string[]
+  isModified: boolean
 }
 
-export interface AvailableGenre {
+export interface SelectedGenre {
   ids: { category: string; id: string }[]
   key: string
 }
