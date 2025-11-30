@@ -51,7 +51,7 @@ export const useEpisodesStore = defineStore('episodes', {
           episodes.push({
             title: episode['title'],
             editorialDate: new Date(episode['editorialDate']),
-            image: episode['teaser']['imageWithoutLogo']['layouts']['dim768X432'],
+            image: episode['teaser']['imageWithoutLogo']?.['layouts']?.['dim768X432'] ?? null,
             duration: episode['currentMedia']['nodes'][0]['duration'],
             url: episode['sharingUrl'],
           })
