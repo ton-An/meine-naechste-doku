@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useEpisodesStore } from '@/stores/episodes_store/episodes_store'
@@ -12,7 +13,14 @@ const { t } = useI18n()
 const filterStore = useFilterStore()
 const episodesStore = useEpisodesStore()
 
+onMounted(() => {
+  filterStore.updateSelectedCategories(['pub-form-10003'])
+  filterStore.updateSelectedGenres(['all'])
+  applyFilters()
+})
+
 const applyFilters = () => {
+  filterStore.resetIsModified()
   const selectedGenres = filterStore.getSelectedGenres
 
   episodesStore.getNewEpisodes(selectedGenres)
@@ -29,7 +37,11 @@ const applyFilters = () => {
       </div>
       <div class="w-1/2 flex justify-between">
         <GenreSelector />
-        <button v-if="filterStore.state.isModified" @click="applyFilters">
+        <button
+          class="bg-orange-500 text-white px-4 py-2 rounded-md"
+          v-if="filterStore.state.isModified"
+          @click="applyFilters"
+        >
           {{ t('common.apply') }}
         </button>
       </div>
