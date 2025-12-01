@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { Check, ChevronDown } from 'lucide-vue-next'
+import { ChevronDown, List } from 'lucide-vue-next'
 import {
   ComboboxAnchor,
   ComboboxContent,
   ComboboxEmpty,
   ComboboxGroup,
-  ComboboxItem,
   ComboboxPortal,
   ComboboxRoot,
+  ComboboxSeparator,
   ComboboxTrigger,
   ComboboxViewport,
 } from 'radix-vue'
 import { useI18n } from 'vue-i18n'
 
+import CustomSelectorItem from './_CustomSelectorItem.vue'
 import type { CustomSelectorOption } from './customSelectorOptions'
 
 const { t } = useI18n()
@@ -21,21 +22,25 @@ defineProps<{
   options: CustomSelectorOption[]
   values: CustomSelectorOption[]
   placeholder: string
-  onValuesUpdate: (values: CustomSelectorOption[]) => void
+  disabled: boolean
+  onValueUpdated: (values: CustomSelectorOption) => void
 }>()
 </script>
 
 <template>
   <ComboboxRoot
-    :values="values"
+    :model-value="values"
     multiple
     class="relative"
-    @update:model-value="onValuesUpdate($event as CustomSelectorOption[])"
+    @update:model-value="onValueUpdated($event)"
   >
     <ComboboxAnchor
       class="min-w-50 inline-flex items-center justify-between rounded-lg leading-none bg-white/60 backdrop-blur-3xl"
     >
-      <ComboboxTrigger class="flex items-center justify-between w-full gap-3 px-3.5 py-2.5">
+      <ComboboxTrigger
+        class="flex items-center justify-between w-full gap-3 px-3.5 py-2.5 disabled:cursor-not-allowed disabled:opacity-50"
+        :disabled="disabled"
+      >
         <span class="text-md">
           {{ values.length > 0 ? values.map((v) => t(v.i18nKey)).join(', ') : placeholder }}
         </span>
@@ -50,20 +55,18 @@ defineProps<{
         <ComboboxViewport class="px-3.5 py-4.5">
           <ComboboxEmpty class="text-center" />
 
+          <CustomSelectorItem
+            :option="{ id: 'all', i18nKey: 'common.all', icon: List }"
+            :isSelected="values.some((v) => v.id === 'all')"
+          />
+          <ComboboxSeparator class="h-0.5 bg-gray-500/40 mb-4" />
           <ComboboxGroup>
-            <ComboboxItem
-              v-for="(option, index) in options"
-              :key="index"
-              class="flex justify-between items-center not-last:mb-4"
-              :value="option"
-            >
-              <div class="leading-none flex items-center cursor-pointer gap-2 relative select-none">
-                <component :is="option.icon" class="size-5.5" />
-                <span>{{ t(option.i18nKey) }}</span>
-              </div>
-
-              <Check v-if="values.some((v) => v.id === option.id)" class="size-4 text-orange-600" />
-            </ComboboxItem>
+            <CustomSelectorItem
+              v-for="option in options"
+              :key="option.id"
+              :option="option"
+              :isSelected="values.some((v) => v.id === option.id)"
+            />
           </ComboboxGroup>
         </ComboboxViewport>
       </ComboboxContent>

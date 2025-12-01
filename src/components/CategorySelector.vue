@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BookMarked, SearchIcon } from 'lucide-vue-next'
+import { BookMarked, List, SearchIcon } from 'lucide-vue-next'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -11,6 +11,11 @@ import type { CustomSelectorOption } from './CustomSelector/customSelectorOption
 const { t } = useI18n()
 
 const options: Record<string, CustomSelectorOption> = {
+  all: {
+    i18nKey: 'common.all',
+    id: 'all',
+    icon: List,
+  },
   'pub-form-10003': {
     i18nKey: 'category.documentary',
     id: 'pub-form-10003',
@@ -32,8 +37,8 @@ const availableCategories = computed(() =>
 const selectedCategories = computed(() =>
   filterStore.state.selectedCategories.map((category: string) => options[category]!),
 )
-const onValuesUpdated = (values: CustomSelectorOption[]) => {
-  filterStore.updateSelectedCategories(values.map((value) => value.id))
+const onValueUpdated = (value: CustomSelectorOption[]) => {
+  filterStore.updateSelectedCategories(value.map((v) => v.id))
 }
 </script>
 
@@ -42,6 +47,6 @@ const onValuesUpdated = (values: CustomSelectorOption[]) => {
     :options="availableCategories"
     :values="selectedCategories"
     :placeholder="t('common.selectCategories')"
-    :onValuesUpdate="onValuesUpdated"
+    :onValueUpdated="onValueUpdated"
   />
 </template>

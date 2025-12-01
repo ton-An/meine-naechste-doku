@@ -15,6 +15,7 @@ import {
   GraduationCap,
   Heart,
   Leaf,
+  List,
   MountainSnow,
   Music,
   Puzzle,
@@ -39,6 +40,11 @@ import type { CustomSelectorOption } from './CustomSelector/customSelectorOption
 const { t } = useI18n()
 
 const options: Record<string, CustomSelectorOption> = {
+  all: {
+    i18nKey: 'common.all',
+    id: 'all',
+    icon: List,
+  },
   knowledge: {
     i18nKey: 'genres.knowledge',
     id: 'knowledge',
@@ -181,7 +187,6 @@ const filterStore = useFilterStore()
 const availableGenres: ComputedRef<CustomSelectorOption[]> = computed(() => {
   const availableGenresOptions = filterStore.state.availableGenres.map((key) => options[key]!)
 
-  console.log(availableGenresOptions)
   return availableGenresOptions
 })
 
@@ -189,8 +194,8 @@ const selectedGenres: ComputedRef<CustomSelectorOption[]> = computed(() =>
   filterStore.state.selectedGenres.map((genre: string) => options[genre]!),
 )
 
-const onValuesUpdated = (values: CustomSelectorOption[]) => {
-  filterStore.updateSelectedGenres(values.map((value) => value.id))
+const onValueUpdated = (values: CustomSelectorOption[]) => {
+  filterStore.updateSelectedGenres(values.map((v) => v.id))
 }
 </script>
 
@@ -198,7 +203,14 @@ const onValuesUpdated = (values: CustomSelectorOption[]) => {
   <CustomSelector
     :options="availableGenres"
     :values="selectedGenres"
-    :placeholder="t('common.selectGenres')"
-    :onValuesUpdate="onValuesUpdated"
+    :placeholder="
+      t(
+        filterStore.state.selectedCategories.length === 0
+          ? 'common.selectCategoriesFirst'
+          : 'common.selectGenres',
+      )
+    "
+    :onValueUpdated="onValueUpdated"
+    :disabled="filterStore.state.selectedCategories.length === 0"
   />
 </template>
