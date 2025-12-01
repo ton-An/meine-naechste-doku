@@ -5,6 +5,7 @@ type MessageSchema = {
     apply: string
     all: string
     selectCategoriesFirst: string
+    yourNextEpisode: string
   }
   genres: {
     knowledge: string

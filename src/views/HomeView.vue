@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import EpisodeCard from '@/components/EpisodeCard.vue'
 import FilterHeader from '@/components/FilterHeader.vue'
@@ -8,6 +9,8 @@ import ZdfLogo from '@/components/ZdfLogo.vue'
 import { useEpisodesStore } from '@/stores/episodes_store/episodes_store'
 
 const episodesStore = useEpisodesStore()
+
+const { t } = useI18n()
 
 const scrollY = ref(0)
 
@@ -66,7 +69,7 @@ const logoOpacity = computed(() => {
         class="text-[2.2em] font-bold transition-opacity duration-200"
         :style="{ opacity: titleOpacity }"
       >
-        Deine nächste Folge
+        {{ t('common.yourNextEpisode') }}
       </h1>
     </div>
   </div>
