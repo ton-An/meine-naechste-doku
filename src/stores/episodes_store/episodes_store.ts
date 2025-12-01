@@ -1,4 +1,3 @@
-// stores/dataStore.ts
 import { defineStore } from 'pinia'
 
 import type { SelectedGenre } from '../filterStore/filterStates'
@@ -16,20 +15,21 @@ export const useEpisodesStore = defineStore('episodes', {
     async getNewEpisodes(selectedGenres: SelectedGenre[]) {
       this.state = { status: 'loading' as const }
 
-      const promises = []
-
+      const queries: { collectionId: string; genre: string }[] = []
       for (const selectedGenre of selectedGenres) {
         for (const id of selectedGenre.ids) {
-          promises.push(getEpisodes(id.category, id.id))
+          queries.push({ collectionId: id.category, genre: id.id })
         }
       }
 
-      const responses = await Promise.all(promises)
+      const response = await getEpisodesBatched(queries)
 
       const smartCollections = []
 
-      for (const response of responses) {
-        smartCollections.push(...response['data']['metaCollectionContent']['smartCollections'])
+      for (const key of Object.keys(response.data)) {
+        if (response.data[key]?.smartCollections) {
+          smartCollections.push(...response.data[key].smartCollections)
+        }
       }
 
       const episodes: Episode[] = []
@@ -67,7 +67,7 @@ export const useEpisodesStore = defineStore('episodes', {
   },
 })
 
-async function getEpisodes(collectionId: string, genre: string) {
+async function getEpisodesBatched(queries: { collectionId: string; genre: string }[]) {
   const headers = {
     'api-auth': 'Bearer aa3noh4ohz9eeboo8shiesheec9ciequ9Quah7el',
     Accept: 'application/graphql-response+json,application/json;q=0.9',
@@ -75,34 +75,54 @@ async function getEpisodes(collectionId: string, genre: string) {
     'zdf-app-id': 'ffw-mt-web-99976d81',
   }
 
-  const response = await fetch('https://api.zdf.de/graphql', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      operationName: 'getMetaCollectionContent',
-      query: `
-  query getMetaCollectionContent(
-    $collectionId: String!
-    $episodesPageSize: Int = 96
-    $episodesAfter: Cursor
-    $filterBy: SeasonsConnectionFilterByInput
-    $sortBy: [VideosConnectionSortByInput!]
-    $input: MetaCollectionContentInput!
-  ) {
-    metaCollectionContent(collectionId: $collectionId, input: $input) {
+  const queryFields = queries
+    .map(
+      (q, i) => `
+    content_${i}: metaCollectionContent(collectionId: "${q.collectionId}", input: {
+      appId: "zdf-web-99976d81"
+      filters: {}
+      pagination: { first: 96 }
+      user: { abGroup: "gruppe-b", userSegment: "segment_0" }
+      tabId: ${q.genre === 'all' ? 'null' : `"${q.genre}"`}
+    }) {
       recoId
       smartCollections {
         ... on DefaultNoSectionsSmartCollection {
           id
           title
-          seasons(first: 1, offset: 0, filterBy: $filterBy) {
+          seasons(first: 1, offset: 0) {
             ...SeasonWithEpisodes
           }
         }
       }
-    }
+    }`,
+    )
+    .join('\n')
+
+  const query = `
+  query getMetaCollectionContentBatched($episodesPageSize: Int = 96, $episodesAfter: Cursor, $sortBy: [VideosConnectionSortByInput!]) {
+    ${queryFields}
   }
 
+  ${FRAGMENTS}
+  `
+
+  const response = await fetch('https://api.zdf.de/graphql', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      operationName: 'getMetaCollectionContentBatched',
+      query,
+      variables: {
+        episodesPageSize: 96,
+      },
+    }),
+  })
+
+  return response.json()
+}
+
+const FRAGMENTS = `
   fragment MetaCollectionLink on MetaCollection {
     id
     canonical
@@ -247,26 +267,4 @@ async function getEpisodes(collectionId: string, genre: string) {
       endCursor
     }
   }
-`,
-      variables: {
-        collectionId: collectionId,
-        seasonIndex: 0,
-        episodesPageSize: 96,
-        input: {
-          appId: 'zdf-web-99976d81',
-          filters: {},
-          pagination: {
-            first: 96,
-          },
-          user: {
-            abGroup: 'gruppe-b',
-            userSegment: 'segment_0',
-          },
-          tabId: genre === 'all' ? null : genre,
-        },
-      },
-    }),
-  })
-
-  return response.json()
-}
+`
