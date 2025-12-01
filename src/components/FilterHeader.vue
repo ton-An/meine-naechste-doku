@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Loader, LoaderCircle } from 'lucide-vue-next'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -38,11 +39,18 @@ const applyFilters = () => {
       <div class="w-1/2 flex justify-between">
         <GenreSelector />
         <button
-          class="bg-orange-500 text-white px-4 py-2 rounded-md"
-          v-if="filterStore.state.isModified"
+          class="bg-orange-500 text-white px-4 py-2 rounded-md min-w-32 flex items-center justify-center gap-2"
+          v-if="filterStore.state.isModified || episodesStore.state.status === 'loading'"
           @click="applyFilters"
         >
-          {{ t('common.apply') }}
+          <LoaderCircle
+            v-if="episodesStore.state.status === 'loading'"
+            class="w-4 h-4 animate-spin"
+            :stroke-width="3"
+          />
+          <span class="hidden md:block" v-else>
+            {{ t('common.apply') }}
+          </span>
         </button>
       </div>
     </div>
