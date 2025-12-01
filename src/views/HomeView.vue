@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+
 import EpisodeCard from '@/components/EpisodeCard.vue'
 import FilterHeader from '@/components/FilterHeader.vue'
 import GradientBlob from '@/components/GradientBlob.vue'
@@ -6,6 +8,47 @@ import ZdfLogo from '@/components/ZdfLogo.vue'
 import { useEpisodesStore } from '@/stores/episodes_store/episodes_store'
 
 const episodesStore = useEpisodesStore()
+
+const scrollY = ref(0)
+
+const onScroll = () => {
+  scrollY.value = window.scrollY
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', onScroll, { passive: true })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
+})
+
+// Blur starts at 50px scroll, maxes out at 500px scroll
+const logoBlur = computed(() => {
+  const start = 160
+  const end = 1800
+  const linearProgress = Math.min(Math.max((scrollY.value - start) / (end - start), 0), 1)
+
+  // Stronger ease-out curve for even more gradual start
+  const easedProgress = 1 - Math.pow(1 - linearProgress, 2400)
+
+  return `blur(${easedProgress * 8}px)`
+})
+
+// Title fades out from 80px to 250px scroll
+const titleOpacity = computed(() => {
+  const start = 0
+  const end = 200
+  const progress = Math.min(Math.max((scrollY.value - start) / (end - start), 0), 1)
+  return 1 - progress
+})
+
+const logoOpacity = computed(() => {
+  const start = 100
+  const end = 400
+  const progress = Math.min(Math.max((scrollY.value - start) / (end - start), 0), 1)
+  return 1 - progress
+})
 </script>
 
 <template>
@@ -14,16 +57,24 @@ const episodesStore = useEpisodesStore()
       class="absolute top-[50%] left-[50%] size-140 translate-x-[-50%] translate-y-[-50%]"
     />
 
-    <div class="flex flex-col items-center justify-center">
-      <ZdfLogo class="w-40 h-40 relative" />
-      <h1 class="text-[2.2em] font-bold">Deine nächste Folge</h1>
+    <div
+      class="flex flex-col items-center justify-center transition-[filter] duration-200"
+      :style="{ filter: logoBlur }"
+    >
+      <ZdfLogo class="w-40 h-40 relative" :style="{ opacity: logoOpacity }" />
+      <h1
+        class="text-[2.2em] font-bold transition-opacity duration-200"
+        :style="{ opacity: titleOpacity }"
+      >
+        Deine nächste Folge
+      </h1>
     </div>
   </div>
 
   <div v-if="episodesStore.state.status === 'loading'"></div>
   <div class="px-4 w-full z-5 mt-100 relative">
     <FilterHeader class="hidden md:block sticky top-4 left-0 z-20" />
-    <div class="relative z-10 backdrop-blur-lg pt-10">
+    <div class="relative z-10 pt-10">
       <div class="flex flex-wrap gap-6 justify-center">
         <template v-if="episodesStore.state.status === 'success'">
           <div
