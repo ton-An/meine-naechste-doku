@@ -48,5 +48,6 @@ const onValueUpdated = (value: CustomSelectorOption[]) => {
     :values="selectedCategories"
     :placeholder="t('common.selectCategories')"
     :onValueUpdated="onValueUpdated"
+    :disabled="false"
   />
 </template>

@@ -23,7 +23,7 @@ defineProps<{
   values: CustomSelectorOption[]
   placeholder: string
   disabled: boolean
-  onValueUpdated: (values: CustomSelectorOption) => void
+  onValueUpdated: (values: CustomSelectorOption[]) => void
 }>()
 </script>
 
@@ -32,7 +32,7 @@ defineProps<{
     :model-value="values"
     multiple
     class="relative"
-    @update:model-value="onValueUpdated($event)"
+    @update:model-value="onValueUpdated($event as unknown as CustomSelectorOption[])"
   >
     <ComboboxAnchor
       class="min-w-50 inline-flex items-center justify-between rounded-lg leading-none bg-white/60 backdrop-blur-3xl"
