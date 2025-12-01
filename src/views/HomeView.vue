@@ -20,21 +20,25 @@ const episodesStore = useEpisodesStore()
     </div>
   </div>
 
-  <div v-if="episodesStore.state.status === 'loading'">Loading...</div>
+  <div v-if="episodesStore.state.status === 'loading'"></div>
   <div class="px-4 w-full z-5 mt-100 relative">
     <FilterHeader class="hidden md:block sticky top-4 left-0 z-20" />
     <div class="relative z-10 backdrop-blur-lg pt-10">
-      <div
-        class="flex flex-wrap gap-6 justify-center"
-        v-if="episodesStore.state.status === 'success'"
-      >
-        <div
-          class="w-full sm:w-72"
-          v-for="episode in episodesStore.state.episodes"
-          :key="episode.title"
-        >
-          <EpisodeCard :episode="episode" />
-        </div>
+      <div class="flex flex-wrap gap-6 justify-center">
+        <template v-if="episodesStore.state.status === 'success'">
+          <div
+            class="w-full sm:w-72"
+            v-for="episode in episodesStore.state.episodes"
+            :key="episode.title"
+          >
+            <EpisodeCard :episode="episode" />
+          </div>
+        </template>
+        <template v-else>
+          <div class="w-full sm:w-72" v-for="i in 10" :key="i">
+            <EpisodeCard :episode="null" />
+          </div>
+        </template>
       </div>
     </div>
   </div>
