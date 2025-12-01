@@ -66,7 +66,7 @@ const logoOpacity = computed(() => {
     >
       <ZdfLogo class="w-40 h-40 relative" :style="{ opacity: logoOpacity }" />
       <h1
-        class="text-[2.2em] font-bold transition-opacity duration-200"
+        class="text-3xl/11 mt-2 w-96 md:mt-0 md:text-[2.2em] text-center font-bold transition-opacity duration-200"
         :style="{ opacity: titleOpacity }"
       >
         {{ t('common.yourNextEpisode') }}
@@ -76,7 +76,7 @@ const logoOpacity = computed(() => {
 
   <div v-if="episodesStore.state.status === 'loading'"></div>
   <div class="px-4 w-full z-5 mt-100 relative">
-    <FilterHeader class="hidden md:block sticky top-4 left-0 z-20" />
+    <FilterHeader class="sticky top-4 left-0 z-20" />
     <div class="relative z-10 pt-10">
       <div class="flex flex-wrap gap-6 justify-center">
         <template v-if="episodesStore.state.status === 'success'">

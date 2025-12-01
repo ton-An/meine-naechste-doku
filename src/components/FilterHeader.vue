@@ -31,12 +31,14 @@ const applyFilters = () => {
 <template>
   <div>
     <div
-      class="bg-gray-400/30 mx-20 rounded-xl backdrop-blur-lg flex flex-row justify-center gap-4 p-4"
+      class="bg-gray-400/30 md:mx-20 rounded-xl backdrop-blur-lg flex flex-col md:flex-row justify-center gap-4 p-4"
     >
-      <div class="w-1/2 flex justify-end">
+      <div class="w-full md:w-1/2 flex justify-center md:justify-end">
         <CategorySelector />
       </div>
-      <div class="w-1/2 flex justify-between">
+      <div
+        class="w-full md:w-1/2 gap-4 flex justify-center items-center md:justify-between flex-col md:flex-row"
+      >
         <GenreSelector />
         <button
           class="bg-orange-500 text-white px-4 py-2 rounded-md min-w-32 flex items-center justify-center gap-2"
@@ -48,7 +50,7 @@ const applyFilters = () => {
             class="w-4 h-4 animate-spin"
             :stroke-width="3"
           />
-          <span class="hidden md:block" v-else>
+          <span v-else>
             {{ t('common.apply') }}
           </span>
         </button>
