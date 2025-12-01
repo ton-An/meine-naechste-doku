@@ -4,9 +4,11 @@ const de: MessageSchema = {
   common: {
     selectCategories: 'Kategorien auswählen',
     selectGenres: 'Genres auswählen',
+    apply: 'Anwenden',
+    all: 'Alle',
+    selectCategoriesFirst: 'Zuerst Kategorien auswählen',
   },
   genres: {
-    all: 'Alle',
     knowledge: 'Wissen',
     society: 'Gesellschaft',
     history: 'Geschichte',

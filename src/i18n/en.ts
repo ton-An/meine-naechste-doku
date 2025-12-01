@@ -4,9 +4,11 @@ const en: MessageSchema = {
   common: {
     selectCategories: 'Select categories',
     selectGenres: 'Select genres',
+    apply: 'Apply',
+    all: 'All',
+    selectCategoriesFirst: 'Select categories first',
   },
   genres: {
-    all: 'All',
     knowledge: 'Knowledge',
     society: 'Society',
     history: 'History',

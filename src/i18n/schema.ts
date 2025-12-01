@@ -2,9 +2,11 @@ type MessageSchema = {
   common: {
     selectCategories: string
     selectGenres: string
+    apply: string
+    all: string
+    selectCategoriesFirst: string
   }
   genres: {
-    all: string
     knowledge: string
     society: string
     history: string
