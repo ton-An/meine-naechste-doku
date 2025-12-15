@@ -43,7 +43,7 @@ export const useEpisodesStore = defineStore('episodes', {
         for (const episode of episodesOfSeason) {
           episodes.push({
             title: episode['title'],
-            editorialDate: new Date(episode['editorialDate']),
+            visibleFrom: new Date(episode['availability']['vod']['visibleFrom']),
             image: episode['teaser']['imageWithoutLogo']?.['layouts']?.['dim768X432'] ?? null,
             duration: episode['currentMedia']['nodes'][0]['duration'],
             url: episode['sharingUrl'],
@@ -56,8 +56,8 @@ export const useEpisodesStore = defineStore('episodes', {
       )
 
       uniqueEpisodes.sort((a, b) => {
-        const dateA = new Date(a.editorialDate).getTime()
-        const dateB = new Date(b.editorialDate).getTime()
+        const dateA = new Date(a.visibleFrom).getTime()
+        const dateB = new Date(b.visibleFrom).getTime()
 
         return dateB - dateA
       })
@@ -85,11 +85,8 @@ async function getEpisodesBatched(queries: { collectionId: string; genre: string
       user: { abGroup: "gruppe-b", userSegment: "segment_0" }
       tabId: ${q.genre === 'all' ? 'null' : `"${q.genre}"`}
     }) {
-      recoId
       smartCollections {
         ... on DefaultNoSectionsSmartCollection {
-          id
-          title
           seasons(first: 1, offset: 0) {
             ...SeasonWithEpisodes
           }
@@ -123,148 +120,52 @@ async function getEpisodesBatched(queries: { collectionId: string; genre: string
 }
 
 const FRAGMENTS = `
-  fragment MetaCollectionLink on MetaCollection {
-    id
-    canonical
-    title
-    transformedValue
-    structuralMetadata {
-      isChildrenContent
-    }
-  }
-
-  fragment ContentOwner on ContentOwner {
-    id
-    details
-    title
-    metaCollection {
-      ...MetaCollectionLink
-    }
-  }
-
   fragment ImageSizes on ImageLayout {
-    dim1140X120
-    dim1140X240
-    dim1280X720
-    dim1920X1080
-    dim384X216
     dim768X432
-    imageType
-    original
   }
 
   fragment ImageFragment on ImagePropertyConnection {
-    altText
-    title
-    caption
     layouts {
       ...ImageSizes
     }
   }
 
-  fragment NotClickableStreamingOptions on IStreamingOptions {
-    ad
-    dgs
-    ut
-    ks
-    ov
-    uhd
-    fskMetaCollection {
-      ...MetaCollectionLink
-    }
-  }
-
   fragment VodMediaFragment on VodMedia {
-    vodMediaType
     duration
-    downloadAllowed
-    streamAnchorTags {
-      nodes {
-        anchorLabel
-        anchorOffset
-      }
-    }
-    geoLocation
   }
 
   fragment CurrentMedia on VideoCurrentMediaConnection {
     nodes {
-      ptmdTemplate
       ...VodMediaFragment
     }
   }
 
   fragment VideoFragment on Video {
-    id
-    canonical
     title
-    newContentStatus
-    subtitle
-    contentType
     sharingUrl
-    editorialDate
-    productionYear
-    contentOwner {
-      ...ContentOwner
-    }
     availability {
-      fskBlocked
       vod {
-        visibleTo
         visibleFrom
-        endDate
-        fsk
       }
     }
+
     teaser {
-      title
       imageWithoutLogo {
         ...ImageFragment
       }
-      description
-      sourceVariant
-    }
-    episodeInfo {
-      seasonNumber
-      episodeNumber
-    }
-    structuralMetadata {
-      isChildrenContent
-    }
-    streamingOptions {
-      ...NotClickableStreamingOptions
     }
     currentMedia {
       ...CurrentMedia
     }
-    smartCollection {
-      canonical
-      collectionType
-    }
-    embeddingPossible
   }
 
   fragment SeasonWithEpisodes on SeasonsConnection {
     nodes {
-      id
-      title
-      number
-      countEpisodes
-      newContentStatus
       episodes(first: $episodesPageSize, after: $episodesAfter, sortBy: $sortBy) {
         nodes {
           ...VideoFragment
         }
-        pageInfo {
-          hasNextPage
-          endCursor
-          startCursor
-        }
       }
-    }
-    pageInfo {
-      hasNextPage
-      endCursor
     }
   }
 `

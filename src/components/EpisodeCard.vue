@@ -5,7 +5,7 @@ const props = defineProps<{
   episode: Episode | null
 }>()
 
-const formattedDate = props.episode?.editorialDate.toLocaleDateString('de-DE', {
+const formattedDate = props.episode?.visibleFrom.toLocaleDateString('de-DE', {
   day: '2-digit',
   month: '2-digit',
   year: 'numeric',
